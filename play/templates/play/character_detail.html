@@ -1,0 +1,47 @@
+{% extends 'play/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Détails de {{ character.id_character }}</h1>
+
+<div class="character-detail">
+    <div class="character-img-container">
+        <img src="{{ character.photo.url }}" alt="{{ character.id_character }}" class="character-img-detail">
+    </div>
+
+    <div class="character-info">
+        <p><strong>ID:</strong> {{ character.id_character }}</p>
+        <p><strong>Puissance:</strong> {{ character.puissance }}</p>
+        <p><strong>État:</strong> {{ character.etat }}</p>
+        <p><strong>Sexe:</strong> {{ character.sexe }}</p>
+        <p><strong>Type:</strong> {{ character.type }}</p>
+        <p><strong>Key:</strong> {{ character.key }}</p>
+
+        <div class="lieu-info">
+            <p><strong>Lieu actuel:</strong> {{ character.lieu.id_equip }}</p>
+            {% if character.lieu.photo %}
+            <img src="{{ character.lieu.photo.url }}" alt="Lieu de {{ character.id_character }}" class="lieu-img">
+            {% else %}
+            <p>Pas d'image pour ce lieu</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-container">
+        <h2>Déplacement du personnage</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Déplacer</button>
+        </form>
+        {% if message != ''%}
+        <div class="alert alert-danger" role="alert">
+            {{message}}
+        </div>
+    {% endif %}
+    </div>
+
+    <p><a href="{% url 'character_list' %}">Retour à la liste des personnages</a></p>
+</div>
+
+{% endblock %}

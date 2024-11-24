@@ -1,0 +1,28 @@
+{% extends 'play/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Choisissez un personnage</h1>
+
+<div class="character-list">
+    {% for character in characters %}
+    <div class="character-card">
+        <img src="{{ character.photo.url }}" alt="{{ character.id_character }}" class="character-img">
+        <h3>{{ character.id_character }}</h3>
+        <p>Lieu actuel: {{ character.lieu.id_equip }}</p>
+
+        {% if character.lieu.photo %}
+        <img src="{{ character.lieu.photo.url }}" alt="Lieu de {{ character.id_character }}" class="lieu-img">
+        {% else %}
+        <p>Pas d'image pour ce lieu</p>
+        {% endif %}
+
+        <p>État: {{ character.etat }}</p>
+        <p><a href="{% url 'character_detail' character.id_character %}">Voir les détails</a></p>
+    </div>
+    {% empty %}
+    <p>Aucun personnage disponible.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

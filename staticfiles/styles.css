@@ -1,0 +1,141 @@
+body.mmorpg-theme {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url("{% static 'images/background.jpg' %}");
+    
+    background-size: cover;
+    color: #fff;
+}
+
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+.game-header {
+    text-align: center;
+    padding: 20px 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #f2d530;
+}
+
+.game-navbar {
+    text-align: center;
+    padding: 10px 0;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.game-navbar a {
+    text-decoration: none;
+    color: #f2d530;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+.game-navbar a:hover {
+    color: #fff;
+}
+
+.game-content {
+    padding: 20px;
+}
+
+/* Character List Styles */
+.character-list-section h2 {
+    text-align: center;
+    color: #f2d530;
+    margin-bottom: 20px;
+}
+
+.character-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.character-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #333;
+    border-radius: 10px;
+    text-align: center;
+    padding: 15px;
+    box-shadow: 2px 2px 5px #000;
+    transition: transform 0.3s ease;
+}
+
+.character-card:hover {
+    transform: scale(1.05);
+}
+
+.character-image,
+.lieu-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 10%;
+    border: 3px solid #f2d530;
+    margin-bottom: 10px;
+}
+
+/* Character Detail Styles */
+.character-detail-section {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+.character-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.character-detail .character-info,
+.character-detail .character-actions {
+    margin-bottom: 20px;
+}
+
+.character-detail-image,
+.lieu-detail-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid #f2d530;
+    margin: 20px 0;
+}
+
+.btn-view,
+.btn-action {
+    display: inline-block;
+    padding: 8px 15px;
+    margin-top: 10px;
+    background: #f2d530;
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-view:hover,
+.btn-action:hover {
+    background: #f7e767;
+    color: #111;
+}
+
+.message-box {
+    text-align: center;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    color: #f2d530;
+}
