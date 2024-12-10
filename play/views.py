@@ -15,7 +15,7 @@ def character_detail(request, id_character):
     character = get_object_or_404(Character, id_character=id_character)
     ancien_lieu = get_object_or_404(Equipement, id_equip=character.lieu.id_equip)
     deplacement = False
-    # print("ancien lieu : ", ancien_lieu)
+
     characters_dans_lieu = Character.objects.filter(lieu=ancien_lieu)
     message = ""
     if request.method == "POST":
@@ -23,12 +23,15 @@ def character_detail(request, id_character):
         if form.is_valid():
             form.save(commit="False")
             nouveau_lieu = get_object_or_404(Equipement, id_equip=character.lieu.id_equip)
+
             if nouveau_lieu == ancien_lieu:
-                message = f"{character.id_character} est déjà dans ce lieu"
+                message = f"{character.id_character} est deja dans ce lieu !"
                 return render(request, 'play/character_detail.html', {'character': character, 'lieu': character.lieu, 'form': form, 'message': message, 'characters_dans_lieu': characters_dans_lieu})
+            
             print("nouveau_lieu : ", nouveau_lieu)
             print(f"Etat du perso: {character.id_character}+ {character.etat}")
             print(f"lieu demandé: {nouveau_lieu.id_equip}")
+            
             if nouveau_lieu.disponibilite == "libre":
                 deplacement = False
                
@@ -38,11 +41,15 @@ def character_detail(request, id_character):
                 if nouveau_lieu.id_equip == "dunjeon" and character.etat != "repu":
                     print("n'est pas en état d'aller dans le donjon")
                     message = f"{character.id_character} n'est pas en état pour aller dans le donjon"
-                    return render(request, 'play/character_detail.html', {'character': character, 'lieu': character.lieu, 'form': form, 'message': message, 'characters_dans_lieu': characters_dans_lieu})
-          #      if nouveau_lieu.id_equip == "harddunjeon" and character.etat != "repu" or character.key ==False:
-          #          print("n'est pas en état d'aller dans le donjon")
-          #          message = f"{character.id_character} n'est pas en état pour aller dans le donjon ou n'a pas la clef"
-            #        return render(request, 'play/character_detail.html', {'character': character, 'lieu': character.lieu, 'form': form, 'message': message, 'characters_dans_lieu': characters_dans_lieu})
+               ###     character.lieu=ancien_lieu
+              ###      character.save()  
+               ##     return render(request, 'play/character_detail.html', {'character': character, 'lieu': character.lieu, 'form': form, 'message': message, 'characters_dans_lieu': characters_dans_lieu})
+                if nouveau_lieu.id_equip == "harddunjeon" and ( character.etat != "repu" or character.key ==False):
+                    print("n'est pas en état d'aller dans le donjon")
+                    message = f"{character.id_character} n'est pas en état pour aller dans le donjon ou n'a pas la clef"
+              # ##     character.lieu=ancien_lieu
+              # ##     character.save()  
+               ##     return render(request, 'play/character_detail.html', {'character': character, 'lieu': character.lieu, 'form': form, 'message': message, 'characters_dans_lieu': characters_dans_lieu})
                 
   
                 # si repu et vers donjon simple
@@ -50,28 +57,38 @@ def character_detail(request, id_character):
                 if nouveau_lieu.id_equip == "dunjeon" and character.etat == "repu" and character.puissance<100:
                     if random.random()<=character.puissance/100: # Engros la puissance par defaut de chaque perso est de 20 donc la proba de gagner est de 0.20
                         print("gg")
+                        message = f"{character.id_character} a reussi le dunjeon et a une puissance maximale !"
                         character.etat = "affamé"
                         if character.puissance<100:
+                            message = f"{character.id_character} a reussi le dunjeon et gagne 10 en puissance !"
                             character.puissance += 10 # La puissance du perso monte de 10 donc le prochain donjon sera plus simple, etc.
                     else:
                         character.etat = "blessé"
+                        message = f"{character.id_character} n'a pas reussi le dunjeon..."
                     character.save()
                     deplacement = True
-
+              ##      return render(request, 'play/character_detail.html', {'character': character, 'lieu': character.lieu, 'form': form, 'message': message, 'characters_dans_lieu': characters_dans_lieu})
+              
                 # harddunjeon plus de recompense en puissance mais il faut la clef et plus difficile
                 if nouveau_lieu.id_equip == "harddunjeon" and character.etat == "repu" and character.key==True:
                     character.key=False # Le perso perd la clef
                     if random.random()<=character.puissance/200: # Engros la puissance par defaut de chaque perso est de 20 donc la proba de gagner est de 0.10
                         print("gg")
                         character.etat = "affamé"
+                        message = f"{character.id_character} a reussi le harddunjeon et a une puissance maximale !"
                         if character.puissance<100:
+                            message = f"{character.id_character} a reussi le harddunjeon et gagne 50 en puissance !"
                             character.puissance += 50 # La puissance du perso monte de 50 donc le prochain donjon sera plus simple, etc.
                     else:
                         character.etat = "blessé"
+                        message = f"{character.id_character} n'a pas reussi le harddunjeon et a une puissance minimale..."
                         if character.puissance>10:
                             character.puissance-=10 
+                            message = f"{character.id_character} n'a pas reussi le harddunjeon et perd 10 en puissance ..."
                     character.save()
                     deplacement = True
+          ##          return render(request, 'play/character_detail.html', {'character': character, 'lieu': character.lieu, 'form': form, 'message': message, 'characters_dans_lieu': characters_dans_lieu})
+               
 
                 # si affamé et vers bar
                 elif nouveau_lieu.id_equip == "bar" and character.etat == "affamé":
@@ -95,24 +112,38 @@ def character_detail(request, id_character):
                         message = f"{character.id_character} n'a pas obtenu la clef !"
                     character.save()
                     deplacement = True
-                    
-                if ancien_lieu.disponibilite=="occupé": # SI ancien etait occ
+            ##        return render(request, 'play/character_detail.html', {'character': character, 'lieu': character.lieu, 'form': form, 'message': message, 'characters_dans_lieu': characters_dans_lieu})
+               
+                # si va vers la lotterie et pas assez de puissance pour payer l'entrée    
+                elif nouveau_lieu.id_equip == "lotterie" and character.puissance < 15:
+                    message = f"{character.id_character} n'a pas assez de puissance pour entrer dans la lotterie !"
+         ##           character.lieu=ancien_lieu
+           ##         character.save() 
+         ##           return render(request, 'play/character_detail.html', {'character': character, 'lieu': character.lieu, 'form': form, 'message': message, 'characters_dans_lieu': characters_dans_lieu})
+                
+
+                if ancien_lieu.disponibilite=="occupé" and deplacement: # SI ancien etait occ
                     print("on est dans le if2")
                     ancien_lieu.disponibilite = "libre"
                     print(ancien_lieu,character.lieu)
                     ancien_lieu.save()
-                print("EEEEEEEEEEEEE")
+           
                 print(deplacement)
                 if nombre_lieu > nouveau_lieu.taille_max - 1 and deplacement: #lieu rempli ou pas sachant que le perso s'est deplacé
                     print("on est dans le if1")
+                 #   message = f"{character.id_character} est deja dans ce lieu !"
                     nouveau_lieu.disponibilite = "occupé"
                     nouveau_lieu.save()
                     ancien_lieu.disponibilite = "libre"
                     ancien_lieu.save()
                     
                 if deplacement == False: #pas de deplacement
+                    message = f"Le lieu est actuellement inaccessible pour ce personnage"
                     character.lieu=ancien_lieu
                     character.save()    
+               ####     return render(request, 'play/character_detail.html', {'character': character, 'lieu': character.lieu, 'form': form, 'message': message, 'characters_dans_lieu': characters_dans_lieu})
+                return render(request, 'play/character_detail.html', {'character': character, 'lieu': character.lieu, 'form': form, 'message': message, 'characters_dans_lieu': characters_dans_lieu})
+                
 
             else:
                 print(f"on est ici+{ancien_lieu}")
@@ -133,3 +164,6 @@ def character_detail(request, id_character):
         return render(request,
                     'play/character_detail.html',
                     {'character': character, 'lieu': character.lieu, 'form': form,'message': message, 'characters_dans_lieu': characters_dans_lieu})
+    
+
+
